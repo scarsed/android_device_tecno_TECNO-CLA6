@@ -19,3 +19,7 @@ TARGET_RECOVERY_DEVICE_MODULES := libinit_Tecno-CLA6
 
 # TWRP Configs
 TW_DEVICE_VERSION := CLA6_by_Carbon_mi
+
+# Security / Encryption
+# (You likely already have TW_FORCE_KEYMASTER_VER defined or inherited)
+OF_DEFAULT_KEYMASTER_VERSION := 4.1
