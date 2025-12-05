@@ -9,4 +9,4 @@ PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/twrp_CLA6.mk
 
 COMMON_LUNCH_CHOICES := \
-    terp_CLA6-eng
+    twrp_CLA6-eng
