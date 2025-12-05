@@ -13,7 +13,7 @@ $(call inherit-product, vendor/twrp/config/common.mk)
 
 # Product Specifics
 PRODUCT_DEVICE := TECNO-CLA6
-PRODUCT_NAME := omni_TECNO-CLA6
+PRODUCT_NAME := twrp_CLA6
 PRODUCT_BRAND := TECNO
 PRODUCT_MODEL := TECNO CLA6
 PRODUCT_MANUFACTURER := tecno
