@@ -6,7 +6,7 @@
 #
 
 # Inherit from TECNO-CLA6 device
-$(call inherit-product, device/tecno/tecno/CLA6/device.mk)
+$(call inherit-product, device/tecno/CLA6/device.mk)
 
 # Inherit some common TWRP stuff.
 $(call inherit-product, vendor/twrp/config/common.mk)
