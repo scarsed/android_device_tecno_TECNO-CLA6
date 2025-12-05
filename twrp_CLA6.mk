@@ -12,10 +12,10 @@ $(call inherit-product, device/tecno/CLA6/device.mk)
 $(call inherit-product, vendor/twrp/config/common.mk)
 
 # Product Specifics
-PRODUCT_DEVICE := TECNO-CLA6
 PRODUCT_NAME := twrp_CLA6
-PRODUCT_BRAND := TECNO
-PRODUCT_MODEL := TECNO CLA6
-PRODUCT_MANUFACTURER := tecno
+PRODUCT_DEVICE := Tecno-CLA6
+PRODUCT_BRAND := Tecno
+PRODUCT_MODEL := Tecno CLA6
+PRODUCT_MANUFACTURER := TECNO
 
 PRODUCT_GMS_CLIENTID_BASE := android-tecno
