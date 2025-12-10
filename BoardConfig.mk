@@ -16,6 +16,7 @@ TARGET_OTA_ASSERT_DEVICE := Tecno-CLA6
 # Init
 TARGET_INIT_VENDOR_LIB := libinit_Tecno-CLA6
 TARGET_RECOVERY_DEVICE_MODULES := libinit_Tecno-CLA6
+BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
 
 # TWRP Configs
 TW_DEVICE_VERSION := CLA6_by_Carbon_mi
