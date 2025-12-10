@@ -1,5 +1,8 @@
 DEVICE_PATH := device/tecno/TECNO-CLA6
 
+# Fix conflict: exclude duplicate MTK Boot Control HAL from common vendor tree
+TARGET_BOARD_HALS += -android.hardware.boot@1.2-mtkimpl
+
 # Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
