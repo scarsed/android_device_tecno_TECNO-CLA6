@@ -7,25 +7,26 @@ TARGET_BOARD_HALS += -android.hardware.boot@1.2-mtkimpl
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
 TARGET_CPU_ABI := arm64-v8a
-TARGET_CPU_ABI2 :=
+TARGET_CPU_ABI2 := 
 TARGET_CPU_VARIANT := generic
 TARGET_CPU_VARIANT_RUNTIME := cortex-a55
 
 TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv8-2a
+TARGET_2ND_ARCH_VARIANT := armv7-a-neon
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
-TARGET_USES_64_BIT_BINDER := true
-
-ENABLE_CPUSETS := true
-ENABLE_SCHEDBOOST := true
+# APEX
+OVERRIDE_TARGET_FLATTEN_APEX := true
 
 # Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := mt6789
+TARGET_BOOTLOADER_BOARD_NAME := TECNO-CLA6
 TARGET_NO_BOOTLOADER := true
+
+# Display
+TARGET_SCREEN_DENSITY := 480
 
 # Build hacks
 BUILD_BROKEN_DUP_RULES := true
@@ -63,6 +64,7 @@ BOARD_MKBOOTIMG_ARGS += --dtb_offset $(BOARD_DTB_OFFSET)
 # AVB
 BOARD_AVB_ENABLE := true
 
+
 # Partitions configs
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 BOARD_MAIN_SIZE := 12670140416
@@ -93,13 +95,6 @@ TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
-# Original (or similar)
-# BOARD_BOOTCONFIG += androidboot.selinux=enforcing
-
-# MODIFICATION: Set SELinux to permissive for debugging Keystore errors
-BOARD_BOOTCONFIG += androidboot.selinux=permissive
-BOARD_SEPOLICY_RECOVERY_MODE := permissive
-
 # Platform
 TARGET_BOARD_PLATFORM := mt6789
 
@@ -107,7 +102,7 @@ TARGET_BOARD_PLATFORM := mt6789
 BOARD_VNDK_VERSION := current
 
 # Properties
-TARGET_SYSTEM_PROP += $(DEVICE_PATH)/system.prop
+TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
 
 # Recovery
 BOARD_HAS_LARGE_FILESYSTEM := true
@@ -117,7 +112,7 @@ BOARD_SUPPRESS_SECURE_ERASE := true
 BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
 BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
 TARGET_NO_RECOVERY := true
-TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
+TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/recovery/root/system/etc/recovery.fstab
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
@@ -127,20 +122,6 @@ TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
 TW_USE_FSCRYPT_POLICY := 2
 TW_FORCE_KEYMASTER_VER := true
-
-# ADDED FIX: Copy files required for Keystore 2.0 and FBE Decryption
-# ----------------------------------------------------------------------
-
-# Keystore 2.0 Binary
-PRODUCT_COPY_FILES += $(DEVICE_PATH)/files/system/bin/keystore2:system/bin/keystore2
-
-# KeyMint HAL Binary (Trustonic specific implementation)
-PRODUCT_COPY_FILES += $(DEVICE_PATH)/files/vendor/bin/hw/keymint_trustonic:vendor/bin/hw/android.hardware.security.keymint-service.trustonic
-
-# SharedSecret HAL Library (.so file), located in /system/lib64
-PRODUCT_COPY_FILES += $(DEVICE_PATH)/files/system/lib64/sharedsecret_lib:system/lib64/android.hardware.security.sharedsecret-V1-ndk.so
-
-# ----------------------------------------------------------------------
 
 # Hack
 PLATFORM_SECURITY_PATCH := 2099-12-31
