@@ -3,28 +3,36 @@
     mkdir /mnt/vendor/persist
     mount ext4 /dev/block/by-name/persist /mnt/vendor/persist rw
 
-# This block tells init how to start the Keystore 2.0 service
+# 1. SharedSecret HAL (Loads the .so library)
+# This loads the shared library from /system/lib64
+service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw
+    class hal
+    user system
+    group system
+    seclabel u:r:sharedsecret:s0
+    interface android.hardware.security.sharedsecret.ISharedSecret/default
+    # The --path flag is crucial for it to find the library.
+
+# 2. KeyMint HAL (Executes the Trustonic binary)
+service keymint /vendor/bin/hw/android.hardware.security.keymint-service.trustonic
+    class hal
+    user system
+    group system
+    seclabel u:r:keymint:s0
+    interface android.hardware.security.keymint.IKeyMintDevice/default
+    
+    # Ensures SharedSecret is ready before KeyMint relies on it
+    on restart:sharedsecret
+
+# 3. Keystore 2.0 (The failing service, must be defined correctly)
 service keystore2 /system/bin/keystore2
     class core
     user system
     group system
     capabilities SETUID SETGID
     seclabel u:r:keystore:s0
-    # CRITICAL LINE: This links the service name to the binary
+    # CRITICAL: This directly addresses your 'Could not find...' error
     interface android.system.keystore2.IKeystoreService/default
-# This tells init to start the KeyMint service
-service keymint /vendor/bin/hw/android.hardware.security.keymint-service
-    class hal
-    user system
-    group system
-    seclabel u:r:keymint:s0
-    # CRITICAL LINE: This registers the KeyMint AIDL interface
-    interface android.hardware.security.keymint.IKeyMintDevice/default
-
-# You also need the SharedSecret dependency
-service sharedsecret /vendor/bin/hw/android.hardware.security.sharedsecret-service
-    class hal
-    user system
-    group system
-    seclabel u:r:sharedsecret:s0
-    interface android.hardware.security.sharedsecret.ISharedSecret/default
+    
+    # Ensures KeyMint is ready before Keystore attempts to connect (Optional, but helpful for ordering)
+    on restart:keymint
