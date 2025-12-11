@@ -96,7 +96,7 @@ TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 # Original (or similar)
 # BOARD_BOOTCONFIG += androidboot.selinux=enforcing
 
-# MODIFICATION: Set SELinux to permissive
+# MODIFICATION: Set SELinux to permissive for debugging Keystore errors
 BOARD_BOOTCONFIG += androidboot.selinux=permissive
 BOARD_SEPOLICY_RECOVERY_MODE := permissive
 
@@ -127,6 +127,25 @@ TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
 TW_USE_FSCRYPT_POLICY := 2
 TW_FORCE_KEYMASTER_VER := true
+
+# ADDED FIX: Copy files required for Keystore 2.0 and FBE Decryption
+# Note: Source paths assume files are located under $(DEVICE_PATH)/files/...
+# ----------------------------------------------------------------------
+
+# Keystore 2.0 Binary (needed for IKeystoreService/default registration)
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/files/system/bin/keystore2:system/bin/keystore2
+
+# KeyMint HAL Binary (Trustonic specific implementation)
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/files/vendor/bin/hw/keymint_trustonic:vendor/bin/hw/android.hardware.security.keymint-service.trustonic
+
+# SharedSecret HAL Library (.so file), located in /system/lib64
+PRODUCT_COPY_FILES += \
+    $(DEVICE_PATH)/files/system/lib64/sharedsecret_lib:system/lib64/android.hardware.security.sharedsecret-V1-ndk.so
+
+# ----------------------------------------------------------------------
+
 
 # Hack
 PLATFORM_SECURITY_PATCH := 2099-12-31
@@ -163,18 +182,6 @@ TW_CUSTOM_BATTERY_POS := "790"
 
 # Hack depends
 ALLOW_MISSING_DEPENDENCIES := true
-
-# Keystore 2.0 Binary (needed for IKeystoreService/default)
-PRODUCT_COPY_FILES += \
-    device/<vendor>/<device>/files/system/bin/keystore2:system/bin/keystore2
-
-# KeyMint HAL Binary (Trustonic specific implementation)
-PRODUCT_COPY_FILES += \
-    device/<vendor>/<device>/files/vendor/bin/hw/keymint_trustonic:vendor/bin/hw/android.hardware.security.keymint-service.trustonic
-
-# SharedSecret HAL Library (.so file)
-PRODUCT_COPY_FILES += \
-    device/<vendor>/<device>/files/system/lib64/sharedsecret_lib:system/lib64/android.hardware.security.sharedsecret-V1-ndk.so
 
 # twversion
 TW_DEVICE_VERSION := CLA6_by_Carbon_mi
