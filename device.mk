@@ -85,6 +85,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@4.1
 
+# Keystore Hal
+PRODUCT_PACKAGES += \
+    android.system.keystore2
 
 # MTK plpath utils
 PRODUCT_PACKAGES += \
