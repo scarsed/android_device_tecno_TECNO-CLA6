@@ -93,6 +93,13 @@ TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_VENDOR := vendor
 TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
+# Original (or similar)
+# BOARD_BOOTCONFIG += androidboot.selinux=enforcing
+
+# MODIFICATION: Set SELinux to permissive
+BOARD_BOOTCONFIG += androidboot.selinux=permissive
+BOARD_SEPOLICY_RECOVERY_MODE := permissive
+
 # Platform
 TARGET_BOARD_PLATFORM := mt6789
 
