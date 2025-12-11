@@ -129,23 +129,18 @@ TW_USE_FSCRYPT_POLICY := 2
 TW_FORCE_KEYMASTER_VER := true
 
 # ADDED FIX: Copy files required for Keystore 2.0 and FBE Decryption
-# Note: Source paths assume files are located under $(DEVICE_PATH)/files/...
 # ----------------------------------------------------------------------
 
-# Keystore 2.0 Binary (needed for IKeystoreService/default registration)
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/files/system/bin/keystore2:system/bin/keystore2
+# Keystore 2.0 Binary
+PRODUCT_COPY_FILES += $(DEVICE_PATH)/files/system/bin/keystore2:system/bin/keystore2
 
 # KeyMint HAL Binary (Trustonic specific implementation)
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/files/vendor/bin/hw/keymint_trustonic:vendor/bin/hw/android.hardware.security.keymint-service.trustonic
+PRODUCT_COPY_FILES += $(DEVICE_PATH)/files/vendor/bin/hw/keymint_trustonic:vendor/bin/hw/android.hardware.security.keymint-service.trustonic
 
 # SharedSecret HAL Library (.so file), located in /system/lib64
-PRODUCT_COPY_FILES += \
-    $(DEVICE_PATH)/files/system/lib64/sharedsecret_lib:system/lib64/android.hardware.security.sharedsecret-V1-ndk.so
+PRODUCT_COPY_FILES += $(DEVICE_PATH)/files/system/lib64/sharedsecret_lib:system/lib64/android.hardware.security.sharedsecret-V1-ndk.so
 
 # ----------------------------------------------------------------------
-
 
 # Hack
 PLATFORM_SECURITY_PATCH := 2099-12-31
