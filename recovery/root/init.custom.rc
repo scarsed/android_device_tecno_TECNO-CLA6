@@ -2,3 +2,29 @@
  #Added Manual For Trustonic
     mkdir /mnt/vendor/persist
     mount ext4 /dev/block/by-name/persist /mnt/vendor/persist rw
+
+# This block tells init how to start the Keystore 2.0 service
+service keystore2 /system/bin/keystore2
+    class core
+    user system
+    group system
+    capabilities SETUID SETGID
+    seclabel u:r:keystore:s0
+    # CRITICAL LINE: This links the service name to the binary
+    interface android.system.keystore2.IKeystoreService/default
+# This tells init to start the KeyMint service
+service keymint /vendor/bin/hw/android.hardware.security.keymint-service
+    class hal
+    user system
+    group system
+    seclabel u:r:keymint:s0
+    # CRITICAL LINE: This registers the KeyMint AIDL interface
+    interface android.hardware.security.keymint.IKeyMintDevice/default
+
+# You also need the SharedSecret dependency
+service sharedsecret /vendor/bin/hw/android.hardware.security.sharedsecret-service
+    class hal
+    user system
+    group system
+    seclabel u:r:sharedsecret:s0
+    interface android.hardware.security.sharedsecret.ISharedSecret/default
