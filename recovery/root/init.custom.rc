@@ -2,39 +2,3 @@
  #Added Manual For Trustonic
     mkdir /mnt/vendor/persist
     mount ext4 /dev/block/by-name/persist /mnt/vendor/persist rw
-
-# =========================================================
-# START: FBE DECRYPTION SERVICES (Keystore 2.0 dependencies)
-# =========================================================
-
-# 1. SharedSecret HAL (Loads the .so library via vndservicemanager)
-# This service is necessary before KeyMint and Keystore can use the TEE.
-service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw
-    class hal
-    user system
-    group system
-    seclabel u:r:sharedsecret:s0
-    interface android.hardware.security.sharedsecret.ISharedSecret/default
-
-# 2. KeyMint HAL (Executes the Trustonic binary)
-service keymint /vendor/bin/hw/android.hardware.security.keymint-service.trustonic
-    class hal
-    user system
-    group system
-    seclabel u:r:keymint:s0
-    interface android.hardware.security.keymint.IKeyMintDevice/default
-    on restart:sharedsecret
-
-# 3. Keystore 2.0 (The primary service that fixes the 'Could not find' log)
-service keystore2 /system/bin/keystore2
-    class core
-    user system
-    group system
-    capabilities SETUID SETGID
-    seclabel u:r:keystore:s0
-    interface android.system.keystore2.IKeystoreService/default
-    on restart:keymint
-
-# =========================================================
-# END: FBE DECRYPTION SERVICES
-# =========================================================
