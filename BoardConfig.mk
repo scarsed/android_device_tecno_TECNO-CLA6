@@ -164,5 +164,17 @@ TW_CUSTOM_BATTERY_POS := "790"
 # Hack depends
 ALLOW_MISSING_DEPENDENCIES := true
 
+# Keystore 2.0 Binary (needed for IKeystoreService/default)
+PRODUCT_COPY_FILES += \
+    device/<vendor>/<device>/files/system/bin/keystore2:system/bin/keystore2
+
+# KeyMint HAL Binary (Trustonic specific implementation)
+PRODUCT_COPY_FILES += \
+    device/<vendor>/<device>/files/vendor/bin/hw/keymint_trustonic:vendor/bin/hw/android.hardware.security.keymint-service.trustonic
+
+# SharedSecret HAL Library (.so file)
+PRODUCT_COPY_FILES += \
+    device/<vendor>/<device>/files/system/lib64/sharedsecret_lib:system/lib64/android.hardware.security.sharedsecret-V1-ndk.so
+
 # twversion
 TW_DEVICE_VERSION := CLA6_by_Carbon_mi
