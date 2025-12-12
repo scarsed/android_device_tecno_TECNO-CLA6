@@ -31,3 +31,14 @@ service keystore2 /system/bin/keystore2
     seclabel u:r:keystore:s0
     interface android.system.keystore2.IKeystoreService/default
     on restart:keymint
+# This service is the core of Android IPC (Binder).
+service servicemanager /system/bin/servicemanager
+    class core
+    user system
+    group system
+    critical
+    # This must be present for modern Android
+    seclabel u:r:servicemanager:s0
+service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw ...
+service keymint /vendor/bin/hw/android.hardware.security.keymint-service.trustonic ...
+service keystore2 /system/bin/keystore2 ...
