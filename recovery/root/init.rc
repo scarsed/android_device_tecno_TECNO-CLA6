@@ -1,10 +1,10 @@
 # =========================================================
-# START: FBE DECRYPTION SERVICES (Keystore 2.0 dependencies)
+# =========================================================
+# FBE DECRYPTION SERVICES (Keystore 2.0 dependencies)
 # =========================================================
 
 # 1. SharedSecret HAL (Loads the .so library)
-# This service hosts the NDK library android.hardware.security.sharedsecret-V1-ndk.so
-# which you placed in /system/lib64.
+# Uses the generic HAL manager binary to host the NDK library.
 service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw
     class hal
     user system
@@ -13,7 +13,6 @@ service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw
     interface android.hardware.security.sharedsecret.ISharedSecret/default
 
 # 2. KeyMint HAL (Executes the Trustonic binary)
-# This service is mandatory for Keystore 2.0 TEE operations.
 service keymint /vendor/bin/hw/android.hardware.security.keymint-service.trustonic
     class hal
     user system
@@ -23,17 +22,12 @@ service keymint /vendor/bin/hw/android.hardware.security.keymint-service.truston
     on restart:sharedsecret
 
 # 3. Keystore 2.0 
-# This service addresses the original "Could not find" error.
+# Addresses the original log error: Could not find 'aidl/android.system.keystore2.IKeystoreService/default'
 service keystore2 /system/bin/keystore2
     class core
     user system
     group system
     capabilities SETUID SETGID
     seclabel u:r:keystore:s0
-    # CRITICAL: This line links the AIDL FQNAME to the service
     interface android.system.keystore2.IKeystoreService/default
     on restart:keymint
-
-# =========================================================
-# END: FBE DECRYPTION SERVICES
-# =========================================================
