@@ -1,17 +1,26 @@
-# Safer ServiceManager definition for recovery development
-service servicemanager /system/bin/servicemanager
-    class core       # Indicates it's a core system service (starts early)
-    user system
-    group system
-    # Omit the 'critical' option to prevent recovery bootloops
-    seclabel u:r:servicemanager:s0
 # =========================================================
-# =========================================================
-# FBE DECRYPTION SERVICES (Keystore 2.0 dependencies)
+# FBE DECRYPTION SERVICES AND HOSTS
 # =========================================================
 
-# 1. SharedSecret HAL (Loads the .so library)
-# Uses the generic HAL manager binary to host the NDK library.
+# A. Core Service Manager (Fixes the Binder Context error)
+service servicemanager /system/bin/servicemanager
+    class core
+    user system
+    group system
+    seclabel u:r:servicemanager:s0
+
+# B. Hardware Service Manager (Fixes the 'No such file' error)
+# Note: We use 'oneshot' to ensure it starts, and we omit 'disabled'.
+service hwservicemanager /system/system_ext/bin/hwservicemanager
+    class core
+    user system
+    group system readproc
+    seclabel u:r:hwservicemanager:s0
+    # The 'oneshot' property is used when a service does its job and shouldn't be restarted.
+    # It ensures the service executes immediately.
+    oneshot 
+    
+# C. SharedSecret HAL Host (Needed by KeyMint)
 service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw
     class hal
     user system
@@ -19,7 +28,7 @@ service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw
     seclabel u:r:sharedsecret:s0
     interface android.hardware.security.sharedsecret.ISharedSecret/default
 
-# 2. KeyMint HAL (Executes the Trustonic binary)
+# D. KeyMint HAL
 service keymint /vendor/bin/hw/android.hardware.security.keymint-service.trustonic
     class hal
     user system
@@ -28,8 +37,7 @@ service keymint /vendor/bin/hw/android.hardware.security.keymint-service.truston
     interface android.hardware.security.keymint.IKeyMintDevice/default
     on restart:sharedsecret
 
-# 3. Keystore 2.0 
-# Addresses the original log error: Could not find 'aidl/android.system.keystore2.IKeystoreService/default'
+# E. Keystore 2.0 
 service keystore2 /system/bin/keystore2
     class core
     user system
@@ -38,14 +46,3 @@ service keystore2 /system/bin/keystore2
     seclabel u:r:keystore:s0
     interface android.system.keystore2.IKeystoreService/default
     on restart:keymint
-# This service is the core of Android IPC (Binder).
-service servicemanager /system/bin/servicemanager
-    class core
-    user system
-    group system
-    critical
-    # This must be present for modern Android
-    seclabel u:r:servicemanager:s0
-service sharedsecret /system/bin/vndservicemanager --path=/system/lib64/hw ...
-service keymint /vendor/bin/hw/android.hardware.security.keymint-service.trustonic ...
-service keystore2 /system/bin/keystore2 ...
