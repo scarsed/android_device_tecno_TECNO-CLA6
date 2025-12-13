@@ -1,3 +1,10 @@
+# Safer ServiceManager definition for recovery development
+service servicemanager /system/bin/servicemanager
+    class core       # Indicates it's a core system service (starts early)
+    user system
+    group system
+    # Omit the 'critical' option to prevent recovery bootloops
+    seclabel u:r:servicemanager:s0
 # =========================================================
 # =========================================================
 # FBE DECRYPTION SERVICES (Keystore 2.0 dependencies)
